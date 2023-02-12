@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Table(name = "tax_user")
 @Entity
@@ -14,10 +15,9 @@ public class User {
     public String userId;
     public String email;
     public String name;
-    public String state;
-    public String city;
-    public String address;
     public String imageUrl;
+    @OneToMany
+    public Set<Salary> userSalary;
     public String pushNotificationToken;
     public String isFukraUSer;
     public String source;

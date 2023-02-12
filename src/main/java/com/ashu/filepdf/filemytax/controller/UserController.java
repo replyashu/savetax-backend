@@ -186,7 +186,7 @@ public class UserController {
             if (user.getPushNotificationToken() != null) {
                 Note note = new Note();
                 note.setSubject("Welcome Onboard " + user.getName());
-                note.setContent("Excited to see you here " + user.getAddress());
+                note.setContent("Excited to see you here " + user.getEmail());
                 Map<String, String> data = new LinkedHashMap<>();
                 data.put("key1", "1");
                 data.put("key2", user.getSource());
@@ -211,6 +211,7 @@ public class UserController {
             data.put("key3", "Value c");
             note.setData(data);
             note.setImage(user.getImageUrl());
+
             sendNotificationToUser(note, user.getPushNotificationToken());
         }
 
@@ -223,7 +224,8 @@ public class UserController {
         noteWithToken.setToken(token);
         noteWithToken.setNote(note);
 
-        notificationController.sendNotification(noteWithToken);
+        String status = notificationController.sendNotification(noteWithToken);
+        System.out.println(status);
     }
 
 }
