@@ -5,7 +5,6 @@ import com.ashu.filepdf.filemytax.model.salary.SalaryRequest;
 import com.ashu.filepdf.filemytax.service.salary.SalaryService;
 import com.ashu.filepdf.filemytax.utils.NewRegimeComputation;
 import com.google.gson.Gson;
-import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,7 @@ public class SalaryController {
     private SalaryService salaryService;
 
     @PostMapping("/salary/compute")
-    public ResponseEntity<Boolean> computeUserSalary(@RequestBody SalaryRequest salaryRequest) {
+    public ResponseEntity<Map<String, Double>> computeUserSalary(@RequestBody SalaryRequest salaryRequest) {
 
         double lon = salaryRequest.longitude;
         double lat = salaryRequest.latitude;
@@ -47,7 +46,7 @@ public class SalaryController {
 
         System.out.println(map);
 
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     private Map<String, Double> computeSalaryStructure(String countryCode, String city, double salary, boolean isOptedForOldRegime,
@@ -55,6 +54,8 @@ public class SalaryController {
 
         switch (countryCode) {
             case "IN":
+            // Only for emulator
+            case "US":
                 return calculateSalaryBreakup(salary, isOptedForOldRegime, true, optedFor12Pf, city);
             case "AU":
                 return calculateSalaryBreakup(salary, isOptedForOldRegime, false, optedFor12Pf, city);

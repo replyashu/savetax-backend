@@ -45,12 +45,14 @@ public class NewRegimeComputation {
             case 1:
                 double hra = base * (hrPer / 100.0);
                 return Pair.of("HRA", hra);
+            // 2 -> pf
             case 2:
                 if (optedFor12Pf) {
                     return Pair.of("PF", base * (12 / 100.0));
                 } else {
-                    return Pair.of("PF", 1800.0);
+                    return Pair.of("PF", 1800.0 * 12);
                 }
+            // 3 -> Salary
             case 3:
                 return Pair.of("Special", sal);
         }
