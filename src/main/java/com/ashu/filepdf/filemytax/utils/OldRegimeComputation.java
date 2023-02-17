@@ -5,32 +5,34 @@ import org.springframework.data.util.Pair;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class NewRegimeComputation {
+public class OldRegimeComputation {
 
     double salary;
     boolean optedFor12Pf;
+    int basicPer;
     int hrPer;
     int startIndex = 0;
 
     double base = 0.0;
-    public NewRegimeComputation(double salary, boolean optedFor12Pf, int hr) {
+    public OldRegimeComputation(double salary, boolean optedFor12Pf, int hr) {
         this.salary = salary;
         this.optedFor12Pf = optedFor12Pf;
         this.hrPer = hr;
+        this.basicPer = 50;
     }
 
     public Map<Map<String, Boolean>, Map<Double, Boolean>> calculateAndReturnSalaryComponents() {
         Map<Map<String, Boolean>, Map<Double, Boolean>> result = new LinkedHashMap<>();
+        Map<Double, Boolean> amntValues;
         double comp = salary;
-        Map<Double, Boolean> amountVal;
 
         while (comp > 0) {
             Map<Map<String, Boolean>, Pair<Double, Boolean>> map = remainingSalary(comp);
-            amountVal = new LinkedHashMap<>();
+            amntValues = new LinkedHashMap<>();
             Map.Entry<Map<String, Boolean>, Pair<Double, Boolean>> entry = map.entrySet().iterator().next();
             Pair<Double, Boolean> salComponent = entry.getValue();
-            amountVal.put(entry.getValue().getFirst(), entry.getValue().getSecond());
-            result.put(entry.getKey(), amountVal);
+            amntValues.put(entry.getValue().getFirst(), entry.getValue().getSecond());
+            result.put(entry.getKey(), amntValues);
             comp -= salComponent.getFirst();
         }
 
@@ -44,7 +46,7 @@ public class NewRegimeComputation {
         switch (startIndex++) {
             // 0 -> Basic
             case 0:
-                double basic = sal * (50 / 100.0);
+                double basic = sal * (basicPer / 100.0);
                 base = basic;
                 componentName.put("Basic", false);
                 componentAmount = Pair.of(basic, false);
@@ -70,8 +72,45 @@ public class NewRegimeComputation {
                     map.put(componentName, componentAmount);
                     return map;
                 }
-            // 3 -> Salary
+            // 3 -> Health 8 - 10%
             case 3:
+                double healthAllowance = base * (8 / 100.0);
+                healthAllowance = Math.min(healthAllowance, 5000);
+                componentName.put("Fitness Allowance", true);
+                componentAmount = Pair.of(healthAllowance, true);
+                map.put(componentName, componentAmount);
+                return map;
+            // 4 -> Health 8 - 10%
+            case 4:
+                double bookAllowance = base * (6 / 100.0);
+                bookAllowance = Math.min(bookAllowance, 6500);
+                componentName.put("Book Allowance", true);
+                componentAmount = Pair.of(bookAllowance, true);
+                map.put(componentName, componentAmount);
+                return map;
+            // 5 -> Telephone - 8 - 10%
+            case 5:
+                double telephoneAllowance = base * (6 / 100.0);
+                telephoneAllowance = Math.min(telephoneAllowance, 6500);
+                componentName.put("Telephone Allowance", true);
+                componentAmount = Pair.of(telephoneAllowance, true);
+                map.put(componentName, componentAmount);
+                return map;
+            // 6 -> Meal - 2200 pm
+            case 6:
+                double mealAllowance = 2200 * 12;
+                componentName.put("Meal Allowance", true);
+                componentAmount = Pair.of(mealAllowance, true);
+                map.put(componentName, componentAmount);
+                return map;
+            //  7 -> Child Allowance
+            case 7:
+                componentName.put("Child Allowance", true);
+                componentAmount = Pair.of(200.0, true);
+                map.put(componentName, componentAmount);
+                return map;
+            // 8 -> Special Allowance
+            case 8:
                 componentName.put("Special Allowance", true);
                 componentAmount = Pair.of(sal, true);
                 map.put(componentName, componentAmount);
@@ -80,5 +119,4 @@ public class NewRegimeComputation {
 
         return map;
     }
-
 }
