@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.*;
 
 @RestController
 public class SalaryController {
@@ -49,16 +48,21 @@ public class SalaryController {
             map = computeSalaryStructure(country, city, salaryRequest.ctc, salaryRequest.isOptedForOldRegime(), salaryRequest.optedFor12Pf);
         }
 
+        String currency = getCurrencyCode(country);
+
         SalaryResponse salaryResponse;
         for (Map<String, Boolean> keys: map.keySet()) {
+            DecimalFormat df = new DecimalFormat("###.00");
+            df.setRoundingMode(RoundingMode.FLOOR);
             salaryResponse = new SalaryResponse();
             Map.Entry<String, Boolean> k = keys.entrySet().iterator().next();
             salaryResponse.componentName = k.getKey();
             salaryResponse.isRequired = k.getValue();
             Map<Double, Boolean> vals = map.get(keys);
             Map.Entry<Double, Boolean> v = vals.entrySet().iterator().next();
-            salaryResponse.componentAmount = v.getKey();
+            salaryResponse.componentAmount = Double.valueOf(df.format(v.getKey()));
             salaryResponse.isProofRequired = v.getValue();
+            salaryResponse.currency = currency;
             responses.add(salaryResponse);
         }
 
@@ -111,5 +115,23 @@ public class SalaryController {
                 return 50;
             default: return 40;
         }
+    }
+
+    private String getCurrencyCode(String countryCode) {
+        String currencySymbol = "";
+        Locale locale = null;
+        Currency currency = null;
+        try {
+            locale = new Locale("", countryCode);
+            currency = Currency.getInstance(locale);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        if (currency != null) {
+            currencySymbol = currency.getSymbol();
+        }
+
+        return currencySymbol;
     }
 }

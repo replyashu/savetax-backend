@@ -35,6 +35,11 @@ public class OldRegimeComputation {
             result.put(entry.getKey(), amntValues);
             comp -= salComponent.getFirst();
         }
+        Map<String, Boolean> cName = new LinkedHashMap<>();
+        cName.put("Total", false);
+        Map<Double, Boolean> cAmnt = new LinkedHashMap<>();
+        cAmnt.put(salary, false);
+        result.put(cName, cAmnt);
 
         return result;
     }
@@ -59,8 +64,45 @@ public class OldRegimeComputation {
                 componentAmount = Pair.of(hra, true);
                 map.put(componentName, componentAmount);
                 return map;
-            // 2 -> pf
+            // 2 -> Health 8 - 10%
             case 2:
+                double healthAllowance = base * (8 / 100.0);
+                healthAllowance = Math.min(healthAllowance, 5000);
+                componentName.put("Fitness Allowance", true);
+                componentAmount = Pair.of(healthAllowance, true);
+                map.put(componentName, componentAmount);
+                return map;
+            // 3 -> Health 8 - 10%
+            case 3:
+                double bookAllowance = base * (6 / 100.0);
+                bookAllowance = Math.min(bookAllowance, 6500);
+                componentName.put("Book Allowance", true);
+                componentAmount = Pair.of(bookAllowance, true);
+                map.put(componentName, componentAmount);
+                return map;
+            // 4 -> Telephone - 8 - 10%
+            case 4:
+                double telephoneAllowance = base * (6 / 100.0);
+                telephoneAllowance = Math.min(telephoneAllowance, 6500);
+                componentName.put("Telephone Allowance", true);
+                componentAmount = Pair.of(telephoneAllowance, true);
+                map.put(componentName, componentAmount);
+                return map;
+            // 5 -> Meal - 2200 pm
+            case 5:
+                double mealAllowance = 2200 * 12;
+                componentName.put("Meal Allowance", true);
+                componentAmount = Pair.of(mealAllowance, true);
+                map.put(componentName, componentAmount);
+                return map;
+            // 6 -> Special Allowance
+            case 6:
+                componentName.put("Special Allowance", false);
+                componentAmount = Pair.of(sal, false);
+                map.put(componentName, componentAmount);
+                return map;
+            // 7 -> pf
+            case 7:
                 if (optedFor12Pf) {
                     componentName.put("PF", false);
                     componentAmount = Pair.of(base * (12 / 100.0), false);
@@ -72,47 +114,10 @@ public class OldRegimeComputation {
                     map.put(componentName, componentAmount);
                     return map;
                 }
-            // 3 -> Health 8 - 10%
-            case 3:
-                double healthAllowance = base * (8 / 100.0);
-                healthAllowance = Math.min(healthAllowance, 5000);
-                componentName.put("Fitness Allowance", true);
-                componentAmount = Pair.of(healthAllowance, true);
-                map.put(componentName, componentAmount);
-                return map;
-            // 4 -> Health 8 - 10%
-            case 4:
-                double bookAllowance = base * (6 / 100.0);
-                bookAllowance = Math.min(bookAllowance, 6500);
-                componentName.put("Book Allowance", true);
-                componentAmount = Pair.of(bookAllowance, true);
-                map.put(componentName, componentAmount);
-                return map;
-            // 5 -> Telephone - 8 - 10%
-            case 5:
-                double telephoneAllowance = base * (6 / 100.0);
-                telephoneAllowance = Math.min(telephoneAllowance, 6500);
-                componentName.put("Telephone Allowance", true);
-                componentAmount = Pair.of(telephoneAllowance, true);
-                map.put(componentName, componentAmount);
-                return map;
-            // 6 -> Meal - 2200 pm
-            case 6:
-                double mealAllowance = 2200 * 12;
-                componentName.put("Meal Allowance", true);
-                componentAmount = Pair.of(mealAllowance, true);
-                map.put(componentName, componentAmount);
-                return map;
-            //  7 -> Child Allowance
-            case 7:
+            //  8 -> Child Allowance
+            case 8:
                 componentName.put("Child Allowance", true);
                 componentAmount = Pair.of(200.0, true);
-                map.put(componentName, componentAmount);
-                return map;
-            // 8 -> Special Allowance
-            case 8:
-                componentName.put("Special Allowance", true);
-                componentAmount = Pair.of(sal, true);
                 map.put(componentName, componentAmount);
                 return map;
         }
