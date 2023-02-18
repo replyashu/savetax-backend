@@ -34,6 +34,12 @@ public class NewRegimeComputation {
             comp -= salComponent.getFirst();
         }
 
+        Map<String, Boolean> cName = new LinkedHashMap<>();
+        cName.put("Total", false);
+        Map<Double, Boolean> cAmnt = new LinkedHashMap<>();
+        cAmnt.put(salary, false);
+        result.put(cName, cAmnt);
+
         return result;
     }
 

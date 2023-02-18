@@ -12,4 +12,5 @@ public class SalaryResponse {
     public Boolean isRequired;
     public Double componentAmount;
     public Boolean isProofRequired;
+    public String currency;
 }
